@@ -15,7 +15,7 @@
 
 (library (printer)
          (export pr_str)
-         (import (guile) (types) (ice-9 match) (ice-9 regex)))
+         (import (guile) (types) (ice-9 match)))
 
 (define (print-hashmap hm p)
   (call-with-output-string
@@ -48,8 +48,8 @@
     ((? hash-table?) (print-hashmap obj %pr_str))
     ((? string?)
      (cond
-      ((string-match "^\u029e(.*)" obj)
-       => (lambda (m) (format #f ":~a" (match:substring m 1))))
+      ((string-prefix? "\u029e" obj)
+       (format #f ":~a" (string-drop obj 1)))
       (else (if readable? (format #f "\"~a\"" (->str obj)) obj))))
     ;;((? number?) (format #f "~a" obj))
     ;;((? symbol?) (format #f "~a" obj))

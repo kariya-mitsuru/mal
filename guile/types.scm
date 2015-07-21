@@ -41,7 +41,7 @@
   (string-append "\u029e" str))
 
 (define (_keyword? k)
-  (and (string? k) (if (string-match "^\u029e" k) #t #f)))
+  (and (string? k) (string-prefix? "\u029e" k)))
 
 (define-record-type mal-nil)
 

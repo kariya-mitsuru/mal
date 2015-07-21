@@ -229,7 +229,7 @@ make
 groovy ./stepX_YYY.groovy
 ```
 
-### GNU Guile 2.1+
+### GNU Guile 2.0+
 
 *The Guile implementation was created by [Mu Lei (NalaGinrut)](https://github.com/NalaGinrut).*
 

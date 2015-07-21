@@ -114,16 +114,22 @@
 
 (define (REPL)
   (LOOP
-   (catch 'mal-error
+   (catch #t
           (lambda () (PRINT (EVAL (READ) *toplevel*)))
           (lambda (k . e)
-            (if (string=? (car e) "blank line")
-                (display "")
-                (format #t "Error: ~a~%" (car e)))))))
+            (case k
+              ((mal-error)
+               (if (string=? (car e) "blank line")
+                   (display "")
+                   (format #t "Error: ~a~%" (car e))))
+              (else (print-exception (current-output-port) #f k e)))))))
 
 ;; NOTE: we have to reduce stack size to pass step5 test
-((@ (system vm vm) call-with-stack-overflow-handler)
- 1024
- (lambda () (REPL))
- (lambda k (throw 'mal-error "stack overflow")))
-
+(cond
+  ((module-variable (resolve-interface '(system vm vm)) 'call-with-stack-overflow-handler)
+   => (lambda (call)
+        ((variable-ref call)
+         1024
+         (lambda () (REPL))
+         (lambda k (throw 'mal-error "stack overflow")))))
+  (else (REPL)))
